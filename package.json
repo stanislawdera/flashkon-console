@@ -17,5 +17,9 @@
     "school"
   ],
   "author": "Stanisław Dera",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "inquirer": "^8.2.4"
+  }
 }
