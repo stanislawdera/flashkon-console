@@ -75,7 +75,7 @@ const openSet = async () => {
   } else {
     console.log(
       chalk.cyanBright(
-        "It looks like you are using the Flashkon app for the first time. Let's get started by importing the first set. Prepare a file in which terms and definitions are separated by tabs (TSV)."
+        "It looks like you are using the Flashkon app for the first time. Let's get started by importing the first set."
       )
     );
     importWizard();
