@@ -12,27 +12,12 @@ const __dirname = dirname(__filename);
 const DATA_DIRECTORY_NAME = join(__dirname, "..", "data");
 const CONTENTS_FILE_NAME = join(DATA_DIRECTORY_NAME, "contents.json");
 
-const checkIfContentsFileExists = () => {
-  try {
-    if (fs.existsSync(CONTENTS_FILE_NAME)) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    return false;
-  }
-};
-
 const getContents = () => {
-  let contents = [];
-  if (checkIfContentsFileExists())
-    contents = JSON.parse(fs.readFileSync(CONTENTS_FILE_NAME));
-  return contents;
+  return JSON.parse(fs.readFileSync(CONTENTS_FILE_NAME));
 };
 
 const getSetById = (id) => {
-  const setPath = join(DATA_DIRECTORY_NAME, `${id}.json`);
+  const setPath = join(DATA_DIRECTORY_NAME, "sets", `${id}.json`);
 
   try {
     return JSON.parse(fs.readFileSync(setPath));
@@ -75,7 +60,7 @@ const openSet = async () => {
   } else {
     console.log(
       chalk.cyanBright(
-        "It looks like you are using the Flashkon app for the first time. Let's get started by importing the first set."
+        "You don't have any set created. Let's get started by importing the first set."
       )
     );
     importWizard();
