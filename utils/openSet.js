@@ -1,37 +1,24 @@
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import fs from "fs";
 import inquirer from "inquirer";
 import chalk from "chalk";
-import { exit } from "process";
 import importWizard from "./importWizard.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DATA_DIRECTORY_NAME = join(__dirname, "..", "data");
-const CONTENTS_FILE_NAME = join(DATA_DIRECTORY_NAME, "contents.json");
-
-const getContents = () => {
-  return JSON.parse(fs.readFileSync(CONTENTS_FILE_NAME));
-};
-
-const getSetById = (id) => {
-  const setPath = join(DATA_DIRECTORY_NAME, "sets", `${id}.json`);
-
-  try {
-    return JSON.parse(fs.readFileSync(setPath));
-  } catch {
-    console.log(chalk.red("There was an error! We couldn't open this set :("));
-    exit(1);
-  }
-};
+import { getSetDataById, getSets } from "./store/store.js";
+import { exit } from "process";
 
 const openSet = async () => {
-  const contents = getContents();
+  const sets = getSets();
 
+  if (sets.length == 0) {
+    console.log(
+      chalk.cyanBright(
+        "You don't have any set created. Let's get started by importing the first set."
+      )
+    );
+    return await importWizard();
+  }
+
+  // generate choices - existing sets + option to create one
   let choices = [
-    ...contents.map((element) => {
+    ...sets.map((element) => {
       return {
         name: element.name,
         value: element.id,
@@ -43,27 +30,28 @@ const openSet = async () => {
     },
   ];
 
-  if (contents.length > 0) {
-    const setIdPrompt = await inquirer.prompt({
-      name: "set",
-      message: "Which set would you like to learn?",
-      type: "list",
-      choices: choices,
-    });
+  const setIdPrompt = await inquirer.prompt({
+    name: "set",
+    message: "Which set would you like to learn?",
+    type: "list",
+    choices: choices,
+  });
 
-    if (setIdPrompt.set) {
-      const set = getSetById(setIdPrompt.set);
-      console.log(set);
-    } else {
-      importWizard();
+  if (setIdPrompt.set) {
+    try {
+      const set = getSetDataById(setIdPrompt.set);
+      return {
+        id: setIdPrompt.set,
+        set: set,
+      };
+    } catch {
+      console.log(
+        chalk.red("There was an error! We couldn't open this set :(")
+      );
+      exit(1);
     }
   } else {
-    console.log(
-      chalk.cyanBright(
-        "You don't have any set created. Let's get started by importing the first set."
-      )
-    );
-    importWizard();
+    return await importWizard();
   }
 };
 

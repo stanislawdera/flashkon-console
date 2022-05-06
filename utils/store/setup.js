@@ -1,15 +1,7 @@
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { CONTENTS_FILE_NAME, SETS_DIRECTORY_NAME } from "./constants.js";
 import { existsSync, writeFileSync, mkdirSync } from "fs";
 import chalk from "chalk";
 import { exit } from "process";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DATA_DIRECTORY_NAME = join(__dirname, "..", "data");
-const SETS_DIRECTORY_NAME = join(DATA_DIRECTORY_NAME, "sets");
-const CONTENTS_FILE_NAME = join(DATA_DIRECTORY_NAME, "contents.json");
 
 // This function ensures that all needed directories and files exist
 const setup = () => {

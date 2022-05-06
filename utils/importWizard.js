@@ -1,16 +1,9 @@
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import fs from "fs";
 import inquirer from "inquirer";
 import chalk from "chalk";
 import { exit } from "process";
 import Papa from "papaparse";
-import { v4 as uuid } from "uuid";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DATA_DIRECTORY_NAME = join(__dirname, "..", "data");
+import { createSet } from "./store/store.js";
 
 const getFileContent = (path) => {
   try {
@@ -25,8 +18,6 @@ const getFileContent = (path) => {
 };
 
 async function importWizard() {
-  const newSetId = uuid();
-
   console.log(
     chalk.cyanBright(
       "\nPrepare a file in which terms and definitions are separated by tabs (TSV)\n"
@@ -54,7 +45,7 @@ async function importWizard() {
     skipEmptyLines: true,
   }).data;
 
-  const newSetData = parsedFileData.map((element) => {
+  const setData = parsedFileData.map((element) => {
     return {
       ...element,
       score: 0,
@@ -64,10 +55,12 @@ async function importWizard() {
     };
   });
 
-  fs.writeFileSync(
-    join(DATA_DIRECTORY_NAME, "sets", `${newSetId}.json`),
-    JSON.stringify(newSetData)
-  );
+  const setId = createSet(newSetPrompt.name, setData);
+
+  return {
+    id: setId,
+    data: setData,
+  };
 }
 
 export default importWizard;

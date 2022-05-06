@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import openSet from "./utils/openSet.js";
-import setup from "./utils/setup.js";
+import setup from "./utils/store/setup.js";
 
 // Say hello
 console.clear();
@@ -11,4 +11,4 @@ console.log("Welcome to Flashkon!");
 setup();
 
 // Ask a user for the set they want to learn
-openSet();
+console.log(await openSet());
